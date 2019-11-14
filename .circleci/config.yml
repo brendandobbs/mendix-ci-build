@@ -19,7 +19,7 @@ jobs:
       - run:
           name: Install svn
           command: sudo apt-get install subversion 
-      - run
+      - run:
           name: Checkout Mendix Code
           command:  cd docker-mendix-buildpack && svn co -q https://teamserver.sprintr.com/${MENDIX_APP}/${SVN_BRANCH} --username ${SVN_USERNAME} --password ${SVN_PASSWORD}
       - run: 
