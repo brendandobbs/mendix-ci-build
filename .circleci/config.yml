@@ -1,6 +1,8 @@
 version: 2.1
 jobs:
   build:
+    environment:
+          IMAGE_NAME: brendandobbs/mendix-sample-app
     docker:
        - image: circleci/buildpack-deps:stretch
     working_directory: ~/repo
@@ -27,8 +29,13 @@ jobs:
           command: sudo apt-get install git 
       - run: 
           name: Build Image
-          command: cd docker-mendix-buildpack && docker build --build-arg BUILD_PATH=./trunk     --tag mendix/mendix-buildpack:v1.2 .
-      - run: 
+          command: cd docker-mendix-buildpack && docker build --build-arg BUILD_PATH=./trunk     --tag mendix-samp/mendix-buildpack:v1.2 .
+      - run:
+          name: Push Docker Image
+          command: |
+              echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+              docker push $IMAGE_NAME:latest
+     - run: 
           name: Deploying
           command: |
              export KUBECONFIG=/tmp/kubeconfig.json
