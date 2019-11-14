@@ -52,8 +52,6 @@ jobs:
              echo "Deploying to ${NAMESPACE}"
              kubectl config set-context --current --namespace=${NAMESPACE}
              kubectl kubectl apply -f k8s --recursive             
-orbs:
-  node: circleci/node@1.1  
 workflows:
   version: 2
   main:
