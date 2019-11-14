@@ -14,11 +14,14 @@ jobs:
           name:  Setting kubeconfig
           command: echo "${KUBECONFIG_FILE}" | base64 --decode >> /tmp/kubeconfig.json
       - run:
+          name: Get buildpack
+          command: git clone --branch v2.3.1 --config core.autocrlf=false https://github.com/mendix/docker-mendix-buildpack
+      - run:
           name: Install svn
           command: sudo apt-get install subversion 
       - run
           name: Checkout Mendix Code
-          command:  svn co -q https://teamserver.sprintr.com/${MENDIX_APP}/trunk --username ${SVN_USERNAME} --password ${SVN_PASSWORD}
+          command:  cd docker-mendix-buildpack && svn co -q https://teamserver.sprintr.com/${MENDIX_APP}/${SVN_BRANCH} --username ${SVN_USERNAME} --password ${SVN_PASSWORD}
       - run: 
           name: Build Image
           command: ls trunk
