@@ -21,7 +21,7 @@ jobs:
           command: sudo apt-get install subversion 
       - run:
           name: Checkout Mendix Code
-          command:  svn co --no-auth-cache https://teamserver.sprintr.com/${MENDIX_APP}/${SVN_BRANCH} ./docker-mendix-buildpack --username ${SVN_USERNAME} --password ${SVN_PASSWORD}
+          command:  svn co --no-auth-cache https://teamserver.sprintr.com/${MENDIX_APP}/${SVN_BRANCH} ./docker-mendix-buildpack/trunk --username ${SVN_USERNAME} --password ${SVN_PASSWORD}
       - run: 
           name: Build Image
           command: pwd && ls && ls docker-mendix-buildpack
