@@ -1,0 +1,51 @@
+version: 2.1
+jobs:
+  build:
+    executor:
+      name: node/default
+      tag: '10.4'
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: 
+          name: Installing kubectl
+          command: sudo apt-get update && sudo apt-get install -y apt-transport-https && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -  && echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list && sudo apt-get update && sudo apt-get install -y kubectl
+      - run: 
+          name:  Setting kubeconfig
+          command: echo "${KUBECONFIG_FILE}" | base64 --decode >> /tmp/kubeconfig.json
+      - run:
+          name: Install svn
+          command: sudo apt-get install subversion 
+      - run
+          name: Checkout Mendix Code
+          command:  svn co -q https://teamserver.sprintr.com/${MENDIX_APP}/trunk --username ${SVN_USERNAME} --password ${SVN_PASSWORD}
+      - run: 
+          name: Build Image
+          command: ls trunk
+      - run: 
+          name: Deploying
+          command: |
+             export KUBECONFIG=/tmp/kubeconfig.json
+             case $CIRCLE_BRANCH in
+                "develop")
+                     export NAMESPACE=${STAGING_NAMESPACE}
+                     ;;
+                  "master")
+                      export NAMESPACE=${PRODUCTION_NAMESPACE}
+                      ;;
+             esac
+             echo "Deploying to ${NAMESPACE}"
+             kubectl config set-context --current --namespace=${NAMESPACE}
+             kubectl kubectl apply -f k8s --recursive             
+orbs:
+  node: circleci/node@1.1  
+workflows:
+  version: 2
+  main:
+    jobs:
+    - build:
+       filters:
+         branches:
+           only: 
+              - master
+              - develop
