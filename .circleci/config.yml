@@ -1,10 +1,13 @@
 version: 2.1
-jobs:
-  build:
-    environment:
-          IMAGE_NAME: brendandobbs/mendix-sample-app
-    docker:
+executors:
+   docker-publisher:
+     environment:
+       IMAGE_NAME: brendandobbs/mendix-sample-app
+     docker:
        - image: circleci/buildpack-deps:stretch
+jobs:  
+  docker-publisher:
+  build:  
     working_directory: ~/repo
     steps:
       - checkout
