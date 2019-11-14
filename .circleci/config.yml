@@ -24,7 +24,7 @@ jobs:
           command:  svn co --no-auth-cache https://teamserver.sprintr.com/${MENDIX_APP}/${SVN_BRANCH} ./docker-mendix-buildpack/trunk --username ${SVN_USERNAME} --password ${SVN_PASSWORD}
       - run: 
           name: Build Image
-          command: pwd && ls && ls docker-mendix-buildpack
+          command: pwd && ls && ls -l docker-mendix-buildpack/trunk
       - run: 
           name: Deploying
           command: |
