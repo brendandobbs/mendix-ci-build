@@ -32,7 +32,7 @@ jobs:
           command: sudo apt-get install git 
       - run: 
           name: Build Image
-          command: cd docker-mendix-buildpack && docker build --build-arg BUILD_PATH=./trunk     --tag mendix-samp/mendix-buildpack:v1.2 .
+          command: cd docker-mendix-buildpack && docker build --build-arg BUILD_PATH=./trunk     --tag $IMAGE_NAME:latest .
       - run:
           name: Push Docker Image
           command: |
