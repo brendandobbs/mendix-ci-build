@@ -49,6 +49,7 @@ jobs:
           command: |
               export KUBECONFIG=/tmp/kubeconfig.json
               echo "$(helm home)"
+              helm init
               kubectl get -n kyma-installer secret helm-secret -o jsonpath="{.data['global\.helm\.ca\.crt']}" | base64 --decode > "/home/circleci/.helm/ca.pem";
               kubectl get -n kyma-installer secret helm-secret -o jsonpath="{.data['global\.helm\.tls\.crt']}" | base64 --decode > "/home/circleci/.helm/cert.pem";
               kubectl get -n kyma-installer secret helm-secret -o jsonpath="{.data['global\.helm\.tls\.key']}" | base64 --decode > "/home/circleci/.helm/key.pem";
