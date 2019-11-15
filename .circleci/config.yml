@@ -67,7 +67,7 @@ jobs:
              esac
              echo "Deploying to ${NAMESPACE}"
              kubectl config set-context --current --namespace=${NAMESPACE}
-             helm upgrade --install --tls --set image.repository=${IMAGE_NAME},image.tag=latest mendix-app    
+             helm upgrade --install --tls --set image.repository=${IMAGE_NAME},image.tag=latest mendix-app ./mendix-app  
 workflows:
   version: 2
   main:
