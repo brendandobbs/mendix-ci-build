@@ -5,6 +5,7 @@ executors:
        IMAGE_NAME: brendandobbs/mendix-sample-app
      docker:
        - image: circleci/buildpack-deps:stretch
+
 jobs:  
   build:  
     executor: docker-publisher
@@ -37,7 +38,7 @@ jobs:
           command: |
               echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
               docker push $IMAGE_NAME:latest
-     - run: 
+      - run: 
           name: Deploying
           command: |
              export KUBECONFIG=/tmp/kubeconfig.json
