@@ -1,0 +1,65 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ include "mendix-app.fullname" . }}
+  labels:
+    app: {{ include "mendix-app.name" . }}
+    chart: {{ include "mendix-app.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "mendix-app.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "mendix-app.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            - mountPath: "/build/data/files"
+              name: mendix-data
+          env:
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mendix-app.fullname" . }}-secret
+                  key: admin-password
+            - name: LICENSE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mendix-app.fullname" . }}-secret
+                  key: license-id
+            - name: LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mendix-app.fullname" . }}-secret
+                  key: license-key
+            - name: DATABASE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mendix-app.fullname" . }}-secret
+                  key: db-endpoint
+      volumes:
+        - name: mendix-data
+          persistentVolumeClaim:
+            claimName: {{ include "mendix-app.fullname" . }}-secret
