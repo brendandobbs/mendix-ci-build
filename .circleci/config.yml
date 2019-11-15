@@ -39,17 +39,17 @@ jobs:
               echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
               docker push $IMAGE_NAME:latest
       - run:
-          name: Helm Certs
-          command: |
-              kubectl get -n kyma-installer secret helm-secret -o jsonpath="{.data['global\.helm\.ca\.crt']}" | base64 --decode > "$(helm home)/ca.pem";
-              kubectl get -n kyma-installer secret helm-secret -o jsonpath="{.data['global\.helm\.tls\.crt']}" | base64 --decode > "$(helm home)/cert.pem";
-              kubectl get -n kyma-installer secret helm-secret -o jsonpath="{.data['global\.helm\.tls\.key']}" | base64 --decode > "$(helm home)/key.pem";
-      - run:
           name: Install Helm
           command: |
               curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
               chmod 700 get_helm.sh
               ./get_helm.sh
+      - run:
+          name: Helm Certs
+          command: |
+              kubectl get -n kyma-installer secret helm-secret -o jsonpath="{.data['global\.helm\.ca\.crt']}" | base64 --decode > "$(helm home)/ca.pem";
+              kubectl get -n kyma-installer secret helm-secret -o jsonpath="{.data['global\.helm\.tls\.crt']}" | base64 --decode > "$(helm home)/cert.pem";
+              kubectl get -n kyma-installer secret helm-secret -o jsonpath="{.data['global\.helm\.tls\.key']}" | base64 --decode > "$(helm home)/key.pem";
       - run: 
           name: Deploying
           command: |
